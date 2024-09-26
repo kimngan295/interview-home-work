@@ -4,7 +4,7 @@ import { createUser, findUserByUsername } from "../model/userModel.js";
 import sendResponse from "../utils/reponseHelper.js";
 
 // Sign up user
-export const signUp = async (req, res) =>{
+export const signUp = async (req, res) => {
     const { username, password, name, dob } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -23,8 +23,8 @@ export const signUp = async (req, res) =>{
         });
 
         const user = await createUser(userData);
-        if(user){
-            sendResponse(res,'success', 'Register successfully', user)
+        if (user) {
+            sendResponse(res, 'success', 'Register successfully', user)
         }
 
     } catch (error) {
@@ -67,15 +67,7 @@ export const signIn = async (req, res) => {
             { expiresIn: '15m' }
         );
 
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true, 
-            sameSite: 'Strict', 
-            maxAge: 15 * 60 * 1000 
-        });
-
-        if(rememberMe){
-            // Generate Refresh Token (if "Remember Me" is selected)
+        // Generate Refresh Token (if "Remember Me" is selected)
         const refreshToken = jwt.sign(
             { userID: userExist.id },
             process.env.REFRESH_TOKEN_SECRET,
@@ -89,7 +81,7 @@ export const signIn = async (req, res) => {
             sameSite: 'Strict', // Protect against CSRF attacks
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
         });
-        }
+
 
         // Send response with Access Token (and Refresh Token if needed)
         return sendResponse(res, 'success', 'Login successful', {
@@ -102,10 +94,36 @@ export const signIn = async (req, res) => {
     }
 };
 
+export const refreshToken = async (req, res) => {
+    const { refreshToken } = req.cookies; // Hoặc từ req.body nếu sử dụng POST
+
+    if (!refreshToken) {
+        return sendResponse(res, 'error', 'No refresh token provided', null, { code: 401 });
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const user = await getUserByUserID(decoded.userID);
+        const userID = user[0].id
+
+        if (!user) {
+            return sendResponse(res, 'error', 'Invalid refresh token', null, { code: 403 });
+        }
+
+        const newAccessToken = jwt.sign({ userID: userID }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+
+        return sendResponse(res, 'success', 'Token refreshed', { accessToken: newAccessToken });
+
+    } catch (error) {
+        console.error('Error refreshing token:', error.message);
+        return sendResponse(res, 'error', 'Error refreshing token', null, { code: 500 });
+    }
+};
+
 // logout user
 export const logoutUser = async (req, res) => {
     // delete cookies
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    return sendResponse(res,'success', 'Logout Successfully');
+    return sendResponse(res, 'success', 'Logout Successfully');
 }
