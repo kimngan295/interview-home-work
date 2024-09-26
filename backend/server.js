@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import postRoutes from './src/routes/postRoutes.js';
 import authRoutes from './src/routes/authRoutes.js';
+import commentRoutes from './src/routes/commentRoutes.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api-post', postRoutes);
 app.use('/api-auth', authRoutes);
+app.use('/api-comment', commentRoutes)
 
 // Khởi động server
 const PORT = process.env.PORT || 5000;
