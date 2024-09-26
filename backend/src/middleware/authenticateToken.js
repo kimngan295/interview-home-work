@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import sendResponse from "../utils/responseHelper.js";
+import sendResponse from "../utils/reponseHelper.js";
 import dotenv from 'dotenv';
 
 dotenv.config();
