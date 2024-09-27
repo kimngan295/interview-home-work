@@ -5,7 +5,7 @@ import { createNewComment, deleteComment, updateComment } from '../controllers/c
 const router = express.Router();
 
 router.post('/:postID/comment', authenticate, createNewComment);
-router.post('/update-comment/:commentID', authenticate, updateComment);
-router.post('/delete-comment/:commentID', authenticate, deleteComment)
+router.put('/update-comment/:commentID', authenticate, updateComment);
+router.delete('/delete-comment/:commentID', authenticate, deleteComment)
 
 export default router;
