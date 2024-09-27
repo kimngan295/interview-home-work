@@ -120,6 +120,27 @@ export const refreshToken = async (req, res) => {
     }
 };
 
+// Get user details
+export const getUserDetails = async (req, res) => {
+    try {
+        const { userID } = req.params;
+        const userIDToken = req.user.userID;
+
+        if(userID != userIDToken){
+            return sendResponse(res, 'error', 'Unauthorized', null, { code: 401 });
+        }
+        
+        const user = await findUserById(userID);
+        if (!user) {
+            return sendResponse(res, 'error', 'User not found', null, { code: 404 });
+        }
+        sendResponse(res,'success', 'User details fetched', user);
+    } catch (error) {
+        console.error('Error getting user details:', error.message);
+        return sendResponse(res, 'error', 'Error getting user details', null, { code: 500 });
+    }
+}
+
 // logout user
 export const logoutUser = async (req, res) => {
     // delete cookies
