@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import connectDB from './src/config/connectedDB.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -16,6 +17,8 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+
 
 // Routes
 // app.use('/api/auth', authRoutes); 

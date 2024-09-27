@@ -40,3 +40,13 @@ export async function findUserByUsername(username) {
         throw new Error(error.message)
     }
 }
+
+// Function find user by id
+export async function findUserById(userID) {
+    try {
+        const user = await User.findById(userID);
+        return user;
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
