@@ -5,7 +5,7 @@ import sendResponse from "../utils/reponseHelper.js";
 export const getAllPosts = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; 
-        const limit = parseInt(req.query.limit) || 5; 
+        const limit = 5; 
 
         // skip posts
         const skip = (page - 1) * limit;
