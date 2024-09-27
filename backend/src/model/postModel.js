@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 // Create schema for Post
 const postSchema = new mongoose.Schema({
-    owner: { type: mongoose.Schema.Types.ObjectId, required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
     title: { type: String, required: true },
     content: { type: String, required: true },
     created_at: {
@@ -38,18 +38,29 @@ export async function getAllPostsDB() {
 }
 
 // Function get posts limited for page
-    export async function getPostsForPageDB(skip, limit) {
-        try {
-            const posts = await Post.find({})
-               .sort({ created_at: -1 })
-               .skip(skip)
-               .limit(limit);
-            return posts;
-        } catch (error) {
-            console.error('Error getting posts for page from DB:', error);
-            throw error;
-        }
+export async function getPostsForPageDB(skip, limit) {
+    try {
+        const posts = await Post.find({})
+            .sort({ created_at: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate('owner', 'name');
+        const formattedPosts = posts.map(post => ({
+            _id: post._id,
+            author: post.owner.name, // Chỉ lấy tên tác giả
+            title: post.title,
+            content: post.content,
+            tags: post.tags,
+            created_at: post.created_at,
+            updated_at: post.updated_at
+        }));
+
+        return formattedPosts;
+    } catch (error) {
+        console.error('Error getting posts for page from DB:', error);
+        throw error;
     }
+}
 
 // Function get post details
 export async function getPostDetailsDB(postID) {
