@@ -1,11 +1,28 @@
-import { createNewPostDB, deletePostDB, getAllPostsDB, getPostDetailsDB, Post, searchPostsByTitleDB, updatePostDB } from "../model/postModel.js"
+import { createNewPostDB, deletePostDB, getAllPostsDB, getPostDetailsDB, getPostsForPageDB, searchPostsByTitleDB, updatePostDB } from "../model/postModel.js"
 import sendResponse from "../utils/reponseHelper.js";
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
     try {
-        const posts = await getAllPostsDB();
-        sendResponse(res, 'success', 'get all posts successfully', posts);
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 5; 
+
+        // skip posts
+        const skip = (page - 1) * limit;
+
+        // get all posts with skip and limit
+        const posts = await getPostsForPageDB(skip, limit);
+
+        const totalPosts = await getAllPostsDB();
+        const postsCount = totalPosts.length
+        const totalPages = Math.ceil(postsCount / limit);
+
+        sendResponse(res, 'success', 'Get all posts successfully', {
+            posts,
+            page,
+            totalPages,
+            postsCount,
+        });
     } catch (error) {
         console.error(error.message);
         sendResponse(res, 'error', error.message, null, { code: error.code });
@@ -19,7 +36,7 @@ export const getPostDetails = async (req, res) => {
         const { postID } = req.params;
 
         const findPost = await getPostDetailsDB(postID);
-        if(!findPost) {
+        if (!findPost) {
             return sendResponse(res, 'error', 'Post Not Found', null, { code: 404 });
         }
 
@@ -58,11 +75,11 @@ export const updatePost = async (req, res) => {
 
         const findPost = await getPostDetailsDB(postID);
         const owner = findPost.owner
-        if(!findPost) {
+        if (!findPost) {
             return sendResponse(res, 'error', 'Post Not Found', null, { code: 404 });
         }
 
-        if(userID != owner){
+        if (userID != owner) {
             return sendResponse(res, 'error', 'Unauthorized to update this post', null, { code: 401 });
         }
 
@@ -87,11 +104,11 @@ export const deletePost = async (req, res) => {
 
         const findPost = await getPostDetailsDB(postID);
         const owner = findPost.owner
-        if(!findPost) {
+        if (!findPost) {
             return sendResponse(res, 'error', 'Post Not Found', null, { code: 404 });
         }
 
-        if(userID != owner){
+        if (userID != owner) {
             return sendResponse(res, 'error', 'Unauthorized to delete this post', null, { code: 401 });
         }
 
@@ -108,7 +125,7 @@ export const searchPostByTitle = async (req, res) => {
     try {
         const { title } = req.query;
         const posts = await searchPostsByTitleDB(title);
-        if(posts.length === 0){
+        if (posts.length === 0) {
             return sendResponse(res, 'success', 'No post found', null);
         }
         sendResponse(res, 'success', 'Search posts by title successfully', posts);

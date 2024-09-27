@@ -37,6 +37,20 @@ export async function getAllPostsDB() {
     }
 }
 
+// Function get posts limited for page
+    export async function getPostsForPageDB(skip, limit) {
+        try {
+            const posts = await Post.find({})
+               .sort({ created_at: -1 })
+               .skip(skip)
+               .limit(limit);
+            return posts;
+        } catch (error) {
+            console.error('Error getting posts for page from DB:', error);
+            throw error;
+        }
+    }
+
 // Function get post details
 export async function getPostDetailsDB(postID) {
     try {

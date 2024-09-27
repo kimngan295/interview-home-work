@@ -11,4 +11,5 @@ router.post('/search', searchPostByTitle);
 router.post('/:postID', authenticate, getPostDetails);
 router.post('delete-post/:postID', authenticate, deletePost);
 
+
 export default router;
