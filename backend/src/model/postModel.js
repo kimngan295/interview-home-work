@@ -56,14 +56,14 @@ export async function getPostsForPageDB(skip, limit) {
             // Format post and comment details
             return {
                 _id: post._id,
-                author: post.owner.name, // Get author's name
+                author: post.owner && post.owner.name ? post.owner.name : '', // Get author's name
                 title: post.title,
                 content: post.content,
                 tags: post.tags,
                 created_at: post.created_at,
                 updated_at: post.updated_at,
                 comments: comments.map(comment => ({
-                    author: comment.owner.name, // Assuming owner is populated in comments schema
+                    author: comment.owner && comment.owner.name ? comment.owner.name : '', // Assuming owner is populated in comments schema
                     content: comment.content,
                     created_at: comment.created_at
                 }))
