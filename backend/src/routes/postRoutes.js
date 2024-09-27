@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.get('/', getAllPosts);
 router.post('/new-post', authenticate, createPost);
-router.post('/update-post/:postID', authenticate, updatePost);
-router.post('/search', searchPostByTitle);
-router.post('/:postID', authenticate, getPostDetails);
-router.post('delete-post/:postID', authenticate, deletePost);
+router.put('/update-post/:postID', authenticate, updatePost);
+router.get('/search', searchPostByTitle);
+router.get('/:postID', authenticate, getPostDetails);
+router.delete('delete-post/:postID', authenticate, deletePost);
 
 
 export default router;
