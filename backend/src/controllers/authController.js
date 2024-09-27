@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { createUser, findUserByUsername } from "../model/userModel.js";
+import { createUser, findUserById, findUserByUsername } from "../model/userModel.js";
 import sendResponse from "../utils/reponseHelper.js";
 
 // Sign up user
@@ -103,8 +103,8 @@ export const refreshToken = async (req, res) => {
 
     try {
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const user = await getUserByUserID(decoded.userID);
-        const userID = user[0].id
+        const user = await findUserById(decoded.userID);
+        const userID = user._id
 
         if (!user) {
             return sendResponse(res, 'error', 'Invalid refresh token', null, { code: 403 });

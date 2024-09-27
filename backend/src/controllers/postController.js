@@ -12,6 +12,24 @@ export const getAllPosts = async (req, res) => {
     }
 }
 
+// Get a post by ID
+
+export const getPostDetails = async (req, res) => {
+    try {
+        const { postID } = req.params;
+
+        const findPost = await getPostDetailsDB(postID);
+        if(!findPost) {
+            return sendResponse(res, 'error', 'Post Not Found', null, { code: 404 });
+        }
+
+        sendResponse(res, 'success', 'get post successfully', findPost);
+    } catch (error) {
+        console.error(error.message);
+        sendResponse(res, 'error', error.message, null, { code: error.code });
+    }
+}
+
 // create a new post
 export const createPost = async (req, res) => {
     try {
