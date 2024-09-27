@@ -4,7 +4,7 @@ import authenticate from '../middleware/authenticateToken.js';
 
 const router = express.Router();
 
-router.get('/posts', getAllPosts);
+router.get('/', getAllPosts);
 router.post('/new-post', authenticate, createPost);
 router.post('/update-post/:postID',authenticate, updatePost);
 router.post('/search', searchPostByTitle)
