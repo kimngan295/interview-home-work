@@ -5,9 +5,23 @@ const commentSchema = new mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, required: true },
     post: { type: mongoose.Schema.Types.ObjectId, required: true },
     content: { type: String, required: true },
-    created_at: { type: Date, default: Date.now },
-    updated_at: { type: Date, default: Date.now }
-}, { collection: 'comments' });
+    created_at: {
+        type: String,
+        default: () => {
+            const currentDate = new Date();
+            // convert to YYYY-MM-DD
+            return currentDate.toISOString().split('T')[0];
+        }
+    },
+    updated_at: {
+        type: String,
+        default: () => {
+            const currentDate = new Date();
+            // convert to YYYY-MM-DD
+            return currentDate.toISOString().split('T')[0];
+        }
+    }
+}, { collection: 'comments', versionKey: false });
 
 export const Comment = mongoose.model('Comment', commentSchema);
 
@@ -35,7 +49,7 @@ export async function updateCommentDB(commentID, data) {
 }
 
 // Function get comment by ID
- export async function getCommentByID(commentID) {
+export async function getCommentByID(commentID) {
     try {
         console.log("comment ID: " + commentID);
         const comment = await Comment.findById(commentID);

@@ -24,9 +24,9 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.use('/api-post', postRoutes);
-app.use('/api-auth', authRoutes);
-app.use('/api-comment', commentRoutes)
+app.use('/posts', postRoutes);
+app.use('/users', authRoutes);
+app.use('/comments', commentRoutes);
 
 // Khởi động server
 const PORT = process.env.PORT || 5000;
