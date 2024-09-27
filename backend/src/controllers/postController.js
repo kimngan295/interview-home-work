@@ -1,4 +1,4 @@
-import { createNewPostDB, deletePostDB, getAllPostsDB, getPostDetailsDB, Post, updatePostDB } from "../model/postModel.js"
+import { createNewPostDB, deletePostDB, getAllPostsDB, getPostDetailsDB, Post, searchPostsByTitleDB, updatePostDB } from "../model/postModel.js"
 import sendResponse from "../utils/reponseHelper.js";
 
 // Get all posts
@@ -79,6 +79,21 @@ export const deletePost = async (req, res) => {
 
         await deletePostDB(postID);
         sendResponse(res, 'success', 'post deleted successfully', null);
+    } catch (error) {
+        console.error(error.message);
+        sendResponse(res, 'error', error.message, null, { code: error.code });
+    }
+}
+
+// Create search post with title
+export const searchPostByTitle = async (req, res) => {
+    try {
+        const { title } = req.query;
+        const posts = await searchPostsByTitleDB(title);
+        if(posts.length === 0){
+            return sendResponse(res, 'success', 'No post found', null);
+        }
+        sendResponse(res, 'success', 'Search posts by title successfully', posts);
     } catch (error) {
         console.error(error.message);
         sendResponse(res, 'error', error.message, null, { code: error.code });

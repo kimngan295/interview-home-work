@@ -2,18 +2,32 @@ import mongoose from 'mongoose';
 
 // Create schema for Post
 const postSchema = new mongoose.Schema({
-    owner: { type: mongoose.Schema.Types.ObjectId, required: true },  
-    title: { type: String, required: true }, 
-    content: { type: String, required: true }, 
-    created_at: { type: Date, default: Date.now },
-    updated_at: { type: Date },  
-    tags: { type: [String] }, 
-}, { collection: 'posts' }); 
+    owner: { type: mongoose.Schema.Types.ObjectId, required: true },
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    created_at: {
+        type: String,
+        default: () => {
+            const currentDate = new Date();
+            // convert to YYYY-MM-DD
+            return currentDate.toISOString().split('T')[0];
+        }
+    },
+    updated_at: {
+        type: String,
+        default: () => {
+            const currentDate = new Date();
+            // convert to YYYY-MM-DD
+            return currentDate.toISOString().split('T')[0];
+        }
+    },
+    tags: { type: [String] },
+}, { collection: 'posts', versionKey: false });
 
 export const Post = mongoose.model('Post', postSchema);
 
 // Function get all post
-export async function getAllPostsDB(){
+export async function getAllPostsDB() {
     try {
         const posts = await Post.find({});
         return posts;
@@ -24,10 +38,10 @@ export async function getAllPostsDB(){
 }
 
 // Function get post details
-export async function getPostDetailsDB(postID){
+export async function getPostDetailsDB(postID) {
     try {
         const post = await Post.findById(postID);
-        if(!post){
+        if (!post) {
             throw new Error('Post not found');
         }
         return post;
@@ -38,7 +52,7 @@ export async function getPostDetailsDB(postID){
 }
 
 // Function create a new post
-export async function createNewPostDB(data){
+export async function createNewPostDB(data) {
     try {
         const newPost = await Post.create(data);
         return newPost;
@@ -53,31 +67,42 @@ export async function updatePostDB(postID, newData) {
     try {
         const updatedPost = await Post.findByIdAndUpdate(
             postID,
-            { $set: { ...newData, updated_at: Date.now() } }, 
-            { new: true } 
+            { $set: { ...newData, updated_at: Date.now() } },
+            { new: true }
         );
-        
+
         if (!updatedPost) {
             throw new Error('Post not found');
         }
-        
-        return updatedPost; 
+
+        return updatedPost;
     } catch (error) {
-        console.error('Error updating post in DB:', error); 
-        throw error; 
+        console.error('Error updating post in DB:', error);
+        throw error;
     }
 }
 
 // Function delete a post
-export async function deletePostDB(postID){
+export async function deletePostDB(postID) {
     try {
         const deletedPost = await Post.findByIdAndDelete(postID);
-        if(!deletedPost){
+        if (!deletedPost) {
             throw new Error('Post not found');
         }
         return deletedPost;
     } catch (error) {
         console.error('Error deleting post from DB:', error);
+        throw error;
+    }
+}
+
+// Function search post by title
+export async function searchPostsByTitleDB(title) {
+    try {
+        const posts = await Post.find({ title: { $regex: title, $options: 'i' } });
+        return posts;
+    } catch (error) {
+        console.error('Error searching posts by title:', error);
         throw error;
     }
 }
