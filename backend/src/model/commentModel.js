@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 // create schema for User
 const commentSchema = new mongoose.Schema({
-    owner: { type: mongoose.Schema.Types.ObjectId, required: true },
-    post: { type: mongoose.Schema.Types.ObjectId, required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+    post: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Post' },
     content: { type: String, required: true },
     created_at: {
         type: String,
@@ -75,7 +75,12 @@ export async function deleteCommentDB(commentID) {
 // Function get all comments for a post by postID
 export async function getAllCommentsByPostID(postID) {
     try {
-        const comments = await Comment.find({ post: postID }).sort({ created_at: -1 });
+        const comments = await Comment.find({
+            post: postID
+        })
+            .sort({ created_at: -1 })
+            .populate('owner', 'name') // Populate the 'owner' field with the 'username'
+            .exec();
         return comments;
     } catch (error) {
         throw new Error(error.message);

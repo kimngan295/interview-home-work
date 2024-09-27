@@ -1,4 +1,4 @@
-import { createNewCommentDB, deleteCommentDB, getCommentByID, updateCommentDB } from "../model/commentModel.js";
+import { createNewCommentDB, deleteCommentDB, getAllCommentsByPostID, getCommentByID, updateCommentDB } from "../model/commentModel.js";
 import sendResponse from "../utils/reponseHelper.js";
 
 // create new comment

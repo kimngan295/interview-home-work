@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
+import { getAllCommentsByPostID } from './commentModel.js';
 
 // Create schema for Post
 const postSchema = new mongoose.Schema({
-    owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
+    owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
     title: { type: String, required: true },
     content: { type: String, required: true },
     created_at: {
@@ -22,6 +23,7 @@ const postSchema = new mongoose.Schema({
         }
     },
     tags: { type: [String] },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 }, { collection: 'posts', versionKey: false });
 
 export const Post = mongoose.model('Post', postSchema);
@@ -44,15 +46,28 @@ export async function getPostsForPageDB(skip, limit) {
             .sort({ created_at: -1 })
             .skip(skip)
             .limit(limit)
-            .populate('owner', 'name');
-        const formattedPosts = posts.map(post => ({
-            _id: post._id,
-            author: post.owner.name, // Chỉ lấy tên tác giả
-            title: post.title,
-            content: post.content,
-            tags: post.tags,
-            created_at: post.created_at,
-            updated_at: post.updated_at
+            .populate('owner', 'name') // Populate post owner's name
+            .exec();
+
+        // Now, manually fetch comments for each post
+        const formattedPosts = await Promise.all(posts.map(async (post) => {
+            const comments = await getAllCommentsByPostID(post._id); // Get comments for each post
+
+            // Format post and comment details
+            return {
+                _id: post._id,
+                author: post.owner.name, // Get author's name
+                title: post.title,
+                content: post.content,
+                tags: post.tags,
+                created_at: post.created_at,
+                updated_at: post.updated_at,
+                comments: comments.map(comment => ({
+                    author: comment.owner.name, // Assuming owner is populated in comments schema
+                    content: comment.content,
+                    created_at: comment.created_at
+                }))
+            };
         }));
 
         return formattedPosts;
