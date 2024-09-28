@@ -1,0 +1,26 @@
+.header-container {
+    padding-top: 8px;
+    padding-bottom: 0;
+  
+    .nav-brand {
+      // Các kiểu cho Navbar.Brand nếu cần
+    }
+  
+    .nav-link {
+      background-color: #dee2e6; // Đặt màu nền cho ô Blogs
+  
+      // Bạn có thể thêm các kiểu khác cho nav-link ở đây
+    }
+  
+    .user-name {
+      border-left: 2px solid black; // Viền bên trái
+      border-right: 2px solid black; // Viền bên phải
+      padding: 0 5px; // Khoảng cách bên trái và bên phải
+  
+      .avatar {
+        height: 100%; // Đặt chiều cao bằng 100% chiều cao của navbar
+        margin: 0 5px; // Khoảng cách giữa avatar và tên
+      }
+    }
+  }
+  

@@ -1,0 +1,80 @@
+.post-card {
+    border: none; /* Bỏ border trên các cạnh khác nếu không cần thiết */
+    border-bottom: 3px solid #1a1818;
+    padding: 16px;
+    margin-bottom: 16px;
+
+    .post-author, .post-date {
+        margin-left: 21px; /* Khoảng cách bên trái cho nội dung bài viết */
+      }
+      
+      .post-content {
+        margin-left: 21px; /* Khoảng cách bên trái cho nội dung bài viết */
+        max-width: calc(100% - 36px); /* Chiều rộng tối đa (100% trừ 15px lề phải) */
+        word-wrap: break-word; /* Cho phép xuống dòng */
+      }
+
+    h4 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+  
+    .comment-author {
+        color: #5a5a5a; // Màu của tên người comment
+      margin-right: 16px; // Khoảng cách giữa tên và thời gian
+    }
+  
+    .comment-time {
+      color: #a7a5a5; // Màu của thời gian comment (ví dụ: "1 days ago")
+    }
+  
+    .comment-content {
+        color: #494949; // Màu của nội dung comment
+      margin-top: 8px;
+    }
+  
+    .user-comment-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+  
+    .badge {
+      margin: 0 4px 4px 0;
+    }
+  
+    .replies-link {
+        color: #494949; // Màu của chữ "replies"
+      text-decoration: none; // Loại bỏ gạch chân
+      margin-left: 30px; // Cách lề trái 20px
+      &:hover {
+        text-decoration: none; // Đảm bảo khi hover không có gạch chân
+      }
+    }
+  
+    .reply-to-link {
+        color: #5a5a5a; // Màu của chữ "reply to"
+      text-decoration: none; // Loại bỏ gạch chân
+      &:hover {
+        text-decoration: none; // Đảm bảo khi hover không có gạch chân
+      }
+    }
+  
+    .comment-section {
+      margin-left: 30px; // Toàn bộ phần comment cách lề trái 20px
+      border-top: 1px solid #ddd; // Đường kẻ ngang phía trên
+      padding-top: 10px;
+      padding-bottom: 10px;
+      margin-top: 10px;
+    }
+  
+    .comment-item {
+      margin-top: 16px;
+    }
+  
+    button {
+      padding-left: 0;
+    }
+  }
+  
