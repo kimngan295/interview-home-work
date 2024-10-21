@@ -85,7 +85,7 @@ export const signIn = async (req, res) => {
 
         // Send response with Access Token (and Refresh Token if needed)
         return sendResponse(res, 'success', 'Login successful', {
-            accessToken
+            accessToken, refreshToken
         });
 
     } catch (error) {
